@@ -154,8 +154,12 @@ def deletar_usuario():
             print("Operação cancelada.")
             return
 
-        repo.deletar(id_usuario)
-        print("🗑️ Usuário deletado.")
+        deletado = repo.deletar(id_usuario)
+
+        if deletado:
+            print("🗑️ Usuário deletado.")
+        else:
+            print("Usuário não encontrado.")
     except ValueError:
         print("ID inválido.")
 

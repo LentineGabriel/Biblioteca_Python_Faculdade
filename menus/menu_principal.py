@@ -1,6 +1,7 @@
 from menus.usuarios_menu import abrir_menu_usuarios
 from menus.autores_menu import abrir_menu_autores
 from menus.editoras_menu import abrir_menu_editoras
+from menus.livros_menu import abrir_menu_livros
 
 def exibir_menu():
     print("\n=== SISTEMA BIBLIOTECA ===")
@@ -19,7 +20,7 @@ def abrir_menu_principal():
         if opcao == "1":
             abrir_menu_usuarios()
         elif opcao == "2":
-            print(">> Menu de Livros (a implementar)")
+            abrir_menu_livros()
         elif opcao == "3":
             abrir_menu_autores()
         elif opcao == "4":
