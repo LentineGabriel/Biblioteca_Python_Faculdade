@@ -1,8 +1,10 @@
 from entidades.livros import Livro
 from repositorios.livros_repositorio import LivrosRepositorio
+from repositorios.autor_repositorio import AutorRepositorio
 from validacoes.validar_livros import validar_nome_livro
 
 repo = LivrosRepositorio()
+autor_repo = AutorRepositorio()
 
 
 def exibir_menu():
@@ -45,6 +47,18 @@ def criar_livro():
     )
 
     try:
+        id_autor = int(input("ID do autor: "))
+    except ValueError:
+        print("ID do autor inválido.")
+        return
+
+    # Buscar nome do autor
+    autor = autor_repo.buscar_por_id(id_autor)
+    if not autor:
+        print("Autor não encontrado.")
+        return
+
+    try:
         id_editora = int(input("ID da editora: "))
     except ValueError:
         print("ID da editora inválido.")
@@ -52,6 +66,8 @@ def criar_livro():
 
     livro = Livro(
         nome_livro=nome_livro,
+        id_autor=id_autor,
+        nome_autor=autor.nome,
         id_editora=id_editora
     )
 
