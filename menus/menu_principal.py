@@ -26,7 +26,7 @@ def abrir_menu_principal():
         elif opcao == "4":
             abrir_menu_editoras()
         elif opcao == "5":
-            print(">> Menu de Empréstimos (a implementar)")
+            print(">> Menu de Empréstimos")
         elif opcao == "0":
             print("Encerrando sistema...")
             break
