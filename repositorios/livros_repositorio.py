@@ -2,19 +2,50 @@ from contexto.database import get_connection
 from entidades.livros import Livro
 
 
+_SQL_COLUNAS_LIVRO_COM_AUTOR_EDITORA = """
+    l.id_livro,
+    l.nome_livro,
+    l.id_editora,
+    (
+        SELECT MIN(la2.id_autor)
+        FROM livro_autor la2
+        WHERE la2.id_livro = l.id_livro
+    ),
+    (
+        SELECT STRING_AGG(a2.nome, ', ' ORDER BY a2.id_autor)
+        FROM livro_autor la2
+        INNER JOIN autor a2 ON a2.id_autor = la2.id_autor
+        WHERE la2.id_livro = l.id_livro
+    ),
+    ed.nome
+"""
+
+
 class LivrosRepositorio:
     # criar livros
     def criar(self, livro: Livro):
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO livros (nome_livro, id_editora)
             VALUES (%s, %s)
             RETURNING id_livro;
-        """, (livro.nome_livro, livro.id_editora))
+            """,
+            (livro.nome_livro, livro.id_editora),
+        )
 
         livro.id_livro = cursor.fetchone()[0]
+
+        if livro.id_autor is not None:
+            cursor.execute(
+                """
+                INSERT INTO livro_autor (id_livro, id_autor)
+                VALUES (%s, %s);
+                """,
+                (livro.id_livro, livro.id_autor),
+            )
 
         conn.commit()
         cursor.close()
@@ -27,11 +58,15 @@ class LivrosRepositorio:
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("""
-            SELECT *
-            FROM livros
-            ORDER BY id_livro ASC;
-        """)
+        cursor.execute(
+            f"""
+            SELECT
+                {_SQL_COLUNAS_LIVRO_COM_AUTOR_EDITORA}
+            FROM livros l
+            LEFT JOIN editora ed ON ed.id_editora = l.id_editora
+            ORDER BY l.id_livro ASC;
+            """
+        )
 
         rows = cursor.fetchall()
 
@@ -47,11 +82,16 @@ class LivrosRepositorio:
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("""
-            SELECT *
-            FROM livros
-            WHERE id_livro = %s;
-        """, (id_livro,))
+        cursor.execute(
+            f"""
+            SELECT
+                {_SQL_COLUNAS_LIVRO_COM_AUTOR_EDITORA}
+            FROM livros l
+            LEFT JOIN editora ed ON ed.id_editora = l.id_editora
+            WHERE l.id_livro = %s;
+            """,
+            (id_livro,),
+        )
 
         row = cursor.fetchone()
 
@@ -67,7 +107,7 @@ class LivrosRepositorio:
 
         campos_permitidos = {
             "nome_livro",
-            "id_editora"
+            "id_editora",
         }
 
         if campo not in campos_permitidos:
@@ -96,10 +136,13 @@ class LivrosRepositorio:
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             DELETE FROM livros
             WHERE id_livro = %s;
-        """, (id_livro,))
+            """,
+            (id_livro,),
+        )
 
         deletado = cursor.rowcount > 0
 

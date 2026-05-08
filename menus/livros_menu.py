@@ -1,10 +1,12 @@
 from entidades.livros import Livro
 from repositorios.livros_repositorio import LivrosRepositorio
 from repositorios.autor_repositorio import AutorRepositorio
+from repositorios.editora_repositorio import EditoraRepositorio
 from validacoes.validar_livros import validar_nome_livro
 
 repo = LivrosRepositorio()
 autor_repo = AutorRepositorio()
+editora_repo = EditoraRepositorio()
 
 
 def exibir_menu():
@@ -64,11 +66,17 @@ def criar_livro():
         print("ID da editora inválido.")
         return
 
+    editora = editora_repo.buscar_por_id(id_editora)
+    if not editora:
+        print("Editora não encontrada.")
+        return
+
     livro = Livro(
         nome_livro=nome_livro,
         id_autor=id_autor,
         nome_autor=autor.nome,
-        id_editora=id_editora
+        id_editora=id_editora,
+        nome_editora=editora.nome,
     )
 
     try:
