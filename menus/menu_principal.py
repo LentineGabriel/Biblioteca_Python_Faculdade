@@ -2,6 +2,7 @@ from menus.usuarios_menu import abrir_menu_usuarios
 from menus.autores_menu import abrir_menu_autores
 from menus.editoras_menu import abrir_menu_editoras
 from menus.livros_menu import abrir_menu_livros
+from menus.emprestimos_menu import abrir_menu_emprestimos
 
 def exibir_menu():
     print("\n=== SISTEMA BIBLIOTECA ===")
@@ -26,7 +27,7 @@ def abrir_menu_principal():
         elif opcao == "4":
             abrir_menu_editoras()
         elif opcao == "5":
-            print(">> Menu de Empréstimos")
+            abrir_menu_emprestimos()
         elif opcao == "0":
             print("Encerrando sistema...")
             break
