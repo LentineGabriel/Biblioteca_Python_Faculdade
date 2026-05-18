@@ -2,15 +2,15 @@ from menus.usuarios_menu import abrir_menu_usuarios
 from menus.autores_menu import abrir_menu_autores
 from menus.editoras_menu import abrir_menu_editoras
 from menus.livros_menu import abrir_menu_livros
-from menus.emprestimos_menu import abrir_menu_emprestimos
+from menus.estante_menu import abrir_menu_estante
 
 def exibir_menu():
-    print("\n=== SISTEMA BIBLIOTECA ===")
+    print("\n=== ESTANTE VIRTUAL ===")
     print("1 - Usuários")
     print("2 - Livros")
     print("3 - Autores")
     print("4 - Editoras")
-    print("5 - Empréstimos")
+    print("5 - Minha Estante (Controle de Leitura)")
     print("0 - Sair")
 
 def abrir_menu_principal():
@@ -27,7 +27,7 @@ def abrir_menu_principal():
         elif opcao == "4":
             abrir_menu_editoras()
         elif opcao == "5":
-            abrir_menu_emprestimos()
+            abrir_menu_estante()
         elif opcao == "0":
             print("Encerrando sistema...")
             break

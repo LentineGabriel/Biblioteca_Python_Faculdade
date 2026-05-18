@@ -109,3 +109,35 @@ CREATE TABLE emprestimos (
         REFERENCES livros(id_livro)
         ON DELETE CASCADE
 );
+
+-- =========================
+-- TABELA: ESTANTE
+-- =========================
+-- Controla a estante pessoal de livros dos usuários
+
+CREATE TABLE estante (
+    id_estante SERIAL PRIMARY KEY,
+    id_usuario INTEGER NOT NULL,
+    id_livro INTEGER NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- Validação de status (simula ENUM)
+    CONSTRAINT chk_status_estante
+        CHECK (status IN ('lido', 'lendo', 'quero ler')),
+
+    -- Relacionamentos
+    CONSTRAINT fk_usuario_estante
+        FOREIGN KEY (id_usuario)
+        REFERENCES usuarios(id_usuario)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_livro_estante
+        FOREIGN KEY (id_livro)
+        REFERENCES livros(id_livro)
+        ON DELETE CASCADE,
+
+    -- Evita duplicidade do mesmo livro na estante do mesmo usuário
+    CONSTRAINT uk_usuario_livro
+        UNIQUE (id_usuario, id_livro)
+);
