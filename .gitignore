@@ -1,1 +1,38 @@
+# --- Variáveis de Ambiente e Segredos (Segurança) ---
 .env
+.env.local
+.env.*.local
+
+# --- Temporários e Cache do Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.mypy_cache/
+
+# --- Ambientes Virtuais (Python Virtual Environments) ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- IDEs e Editores de Código (VS Code, PyCharm, etc.) ---
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+
+# --- Arquivos Ocultos do Sistema Operacional (Windows / macOS) ---
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# --- Bancos de Dados locais, Docker e Logs ---
+*.log
+postgres_data/
