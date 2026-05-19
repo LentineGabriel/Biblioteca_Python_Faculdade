@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estante Inteligente - Biblioteca Simplificada</title>
+    
+    <!-- Google Fonts: Outfit (Tipografia amigável e moderna) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons (Ícones limpos e profissionais) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Estilos do Front-end -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- CABEÇALHO DA SPA -->
+    <header class="app-header">
+        <div class="header-logo">
+            <div class="logo-icon">
+                <i data-lucide="bookmark"></i>
+            </div>
+            <div class="logo-text">
+                <h1>Estante Inteligente</h1>
+                <p>Biblioteca & Leitura Simplificada</p>
+            </div>
+        </div>
+        
+        <!-- ABAS DE NAVEGAÇÃO SUPERIOR -->
+        <nav class="app-nav">
+            <button class="nav-btn active" data-tab="livros-tab" id="btn-tab-livros">
+                <i data-lucide="book-open"></i>
+                <span>Livros</span>
+            </button>
+            <button class="nav-btn" data-tab="leitores-tab" id="btn-tab-leitores">
+                <i data-lucide="users"></i>
+                <span>Leitores</span>
+            </button>
+            <button class="nav-btn" data-tab="emprestimos-tab" id="btn-tab-emprestimos">
+                <i data-lucide="arrow-left-right"></i>
+                <span>Empréstimos</span>
+            </button>
+            <button class="nav-btn" data-tab="estante-tab" id="btn-tab-estante">
+                <i data-lucide="star"></i>
+                <span>Minha Estante</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- ÁREA CENTRAL DE CONTEÚDO -->
+    <main class="app-main-content">
+
+        <!-- ==========================================
+             ABA 1: ACERVO DE LIVROS
+             ========================================== -->
+        <section id="livros-tab" class="tab-section active">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>📚 Nosso Acervo de Livros</h2>
+                    <p>Aqui você vê todos os livros da biblioteca, edita detalhes ou adiciona novas obras.</p>
+                </div>
+                <button class="btn btn-primary btn-large" onclick="abrirModalLivro()" id="btn-novo-livro">
+                    <i data-lucide="plus"></i>
+                    <span>Cadastrar Novo Livro</span>
+                </button>
+            </div>
+            
+            <!-- Grid dinâmico onde os cards de livros serão injetados -->
+            <div id="grid-livros" class="cards-grid">
+                <div class="loading-state">
+                    <i data-lucide="loader" class="spin"></i>
+                    <p>Carregando acervo de livros...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             ABA 2: LEITORES (USUÁRIOS)
+             ========================================== -->
+        <section id="leitores-tab" class="tab-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>👥 Leitores Cadastrados</h2>
+                    <p>Gerencie as pessoas que frequentam a biblioteca e pegam livros emprestados.</p>
+                </div>
+                <button class="btn btn-primary btn-large" onclick="abrirModalLeitor()" id="btn-novo-leitor">
+                    <i data-lucide="user-plus"></i>
+                    <span>Cadastrar Novo Leitor</span>
+                </button>
+            </div>
+
+            <!-- Grid dinâmico de leitores -->
+            <div id="grid-leitores" class="cards-grid">
+                <div class="loading-state">
+                    <i data-lucide="loader" class="spin"></i>
+                    <p>Carregando leitores...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             ABA 3: EMPRÉSTIMOS DE LIVROS
+             ========================================== -->
+        <section id="emprestimos-tab" class="tab-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>🔄 Empréstimos Realizados</h2>
+                    <p>Controle quem está com os livros e registre devoluções ou atrasos de forma rápida.</p>
+                </div>
+                <button class="btn btn-primary btn-large" onclick="abrirModalEmprestimo()" id="btn-novo-emprestimo">
+                    <i data-lucide="arrow-left-right"></i>
+                    <span>Registrar Novo Empréstimo</span>
+                </button>
+            </div>
+
+            <!-- Seletor rápido para filtrar empréstimos -->
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filtrarEmprestimos('todos')" id="filter-emp-todos">Todos</button>
+                <button class="filter-btn" onclick="filtrarEmprestimos('ativos')" id="filter-emp-ativos">Ativos (Com leitores)</button>
+            </div>
+
+            <!-- Grid dinâmico de empréstimos -->
+            <div id="grid-emprestimos" class="cards-grid">
+                <div class="loading-state">
+                    <i data-lucide="loader" class="spin"></i>
+                    <p>Carregando empréstimos...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             ABA 4: ESTANTE VIRTUAL PESSOAL
+             ========================================== -->
+        <section id="estante-tab" class="tab-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>🌟 Minha Estante Virtual</h2>
+                    <p>Acompanhe o seu progresso de leitura! Defina quais livros você está Lendo, já Leu ou Quer Ler.</p>
+                </div>
+                <button class="btn btn-primary btn-large" onclick="abrirModalEstante()" id="btn-nova-estante">
+                    <i data-lucide="star"></i>
+                    <span>Adicionar à Minha Estante</span>
+                </button>
+            </div>
+
+            <!-- Colunas de Status da Estante (Lido, Lendo, Quero Ler) -->
+            <div class="estante-container">
+                
+                <!-- Coluna LENDO -->
+                <div class="estante-col">
+                    <div class="col-header col-lendo">
+                        <i data-lucide="book-open"></i>
+                        <h3>Lendo Atualmente</h3>
+                        <span class="badge" id="badge-lendo">0</span>
+                    </div>
+                    <div id="estante-lendo-list" class="estante-cards-list">
+                        <!-- Livros injetados dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Coluna QUERO LER -->
+                <div class="estante-col">
+                    <div class="col-header col-quero">
+                        <i data-lucide="heart"></i>
+                        <h3>Quero Ler</h3>
+                        <span class="badge" id="badge-quero">0</span>
+                    </div>
+                    <div id="estante-quero-list" class="estante-cards-list">
+                        <!-- Livros injetados dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Coluna LIDO -->
+                <div class="estante-col">
+                    <div class="col-header col-lido">
+                        <i data-lucide="check-circle2"></i>
+                        <h3>Já Lido</h3>
+                        <span class="badge" id="badge-lido">0</span>
+                    </div>
+                    <div id="estante-lido-list" class="estante-cards-list">
+                        <!-- Livros injetados dinamicamente -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================
+         MODAL 1: CADASTRO/EDIÇÃO DE LIVRO
+         ========================================== -->
+    <div id="modal-livro" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modal-livro-titulo">Cadastrar Novo Livro</h3>
+                <button class="btn-close" onclick="fecharModalLivro()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-livro" onsubmit="salvarLivro(event)">
+                    <input type="hidden" id="livro-id">
+                    
+                    <div class="form-group">
+                        <label for="livro-nome">Nome do Livro *</label>
+                        <input type="text" id="livro-nome" required placeholder="Digite o nome completo do livro">
+                    </div>
+
+                    <!-- Seleção de Autor com Atalho Rápido -->
+                    <div class="form-group">
+                        <label for="livro-autor">Autor *</label>
+                        <div class="input-with-action">
+                            <select id="livro-autor" required>
+                                <option value="">-- Selecione o Autor --</option>
+                            </select>
+                            <button type="button" class="btn btn-secondary btn-icon-only" onclick="abrirSubModalAutor()" title="Criar novo autor na hora">
+                                <i data-lucide="plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Seleção de Editora com Atalho Rápido -->
+                    <div class="form-group">
+                        <label for="livro-editora">Editora *</label>
+                        <div class="input-with-action">
+                            <select id="livro-editora" required>
+                                <option value="">-- Selecione a Editora --</option>
+                            </select>
+                            <button type="button" class="btn btn-secondary btn-icon-only" onclick="abrirSubModalEditora()" title="Criar nova editora na hora">
+                                <i data-lucide="plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Área para mensagens de erros do Pydantic -->
+                    <div id="modal-livro-error" class="error-banner hidden"></div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="fecharModalLivro()">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i data-lucide="save"></i>
+                            <span>Salvar Livro</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         SUB-MODAL 1A: CADASTRAR AUTOR NA HORA
+         ========================================== -->
+    <div id="modal-sub-autor" class="modal-overlay sub-modal">
+        <div class="modal-container modal-small">
+            <div class="modal-header">
+                <h3>Criar Novo Autor</h3>
+                <button class="btn-close" onclick="fecharSubModalAutor()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-sub-autor" onsubmit="salvarSubAutor(event)">
+                    <div class="form-group">
+                        <label for="sub-autor-nome">Nome do Autor *</label>
+                        <input type="text" id="sub-autor-nome" required placeholder="Nome completo do autor">
+                    </div>
+                    <div id="modal-sub-autor-error" class="error-banner hidden"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="fecharSubModalAutor()">Voltar</button>
+                        <button type="submit" class="btn btn-success">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         SUB-MODAL 1B: CADASTRAR EDITORA NA HORA
+         ========================================== -->
+    <div id="modal-sub-editora" class="modal-overlay sub-modal">
+        <div class="modal-container modal-small">
+            <div class="modal-header">
+                <h3>Criar Nova Editora</h3>
+                <button class="btn-close" onclick="fecharSubModalEditora()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-sub-editora" onsubmit="salvarSubEditora(event)">
+                    <div class="form-group">
+                        <label for="sub-editora-nome">Nome da Editora *</label>
+                        <input type="text" id="sub-editora-nome" required placeholder="Nome da editora">
+                    </div>
+                    <div id="modal-sub-editora-error" class="error-banner hidden"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="fecharSubModalEditora()">Voltar</button>
+                        <button type="submit" class="btn btn-success">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL 2: CADASTRO/EDIÇÃO DE LEITOR (USUÁRIO)
+         ========================================== -->
+    <div id="modal-leitor" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modal-leitor-titulo">Cadastrar Novo Leitor</h3>
+                <button class="btn-close" onclick="fecharModalLeitor()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-leitor" onsubmit="salvarLeitor(event)">
+                    <input type="hidden" id="leitor-id">
+                    
+                    <div class="form-group">
+                        <label for="leitor-nome">Nome Completo *</label>
+                        <input type="text" id="leitor-nome" required placeholder="Digite o nome sem números e caracteres especiais">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="leitor-email">E-mail *</label>
+                        <input type="email" id="leitor-email" required placeholder="exemplo@dominio.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="leitor-telefone">Telefone *</label>
+                        <input type="text" id="leitor-telefone" required placeholder="(DD) 9XXXX-XXXX">
+                        <span class="help-text">Insira DDD e o número (ex: 11 98888-7777)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="leitor-endereco">Endereço Residencial *</label>
+                        <input type="text" id="leitor-endereco" required placeholder="Rua, Número, Bairro, Cidade">
+                    </div>
+
+                    <div id="modal-leitor-error" class="error-banner hidden"></div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="fecharModalLeitor()">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i data-lucide="save"></i>
+                            <span>Salvar Leitor</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL 3: REGISTRO DE EMPRÉSTIMO
+         ========================================== -->
+    <div id="modal-emprestimo" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Registrar Novo Empréstimo</h3>
+                <button class="btn-close" onclick="fecharModalEmprestimo()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-emprestimo" onsubmit="salvarEmprestimo(event)">
+                    
+                    <div class="form-group">
+                        <label for="emprestimo-leitor">Quem vai pegar o livro? (Leitor) *</label>
+                        <select id="emprestimo-leitor" required>
+                            <option value="">-- Escolha o Leitor --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emprestimo-livro">Qual livro será emprestado? *</label>
+                        <select id="emprestimo-livro" required>
+                            <option value="">-- Escolha o Livro --</option>
+                        </select>
+                    </div>
+
+                    <div id="modal-emprestimo-error" class="error-banner hidden"></div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="fecharModalEmprestimo()">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i data-lucide="check"></i>
+                            <span>Confirmar Empréstimo</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL 4: ADICIONAR LIVRO NA ESTANTE
+         ========================================== -->
+    <div id="modal-estante" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Adicionar Livro à Minha Estante</h3>
+                <button class="btn-close" onclick="fecharModalEstante()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-estante" onsubmit="salvarEstante(event)">
+                    
+                    <div class="form-group">
+                        <label for="estante-leitor">De quem é esta estante? *</label>
+                        <select id="estante-leitor" required onchange="aoMudarUsuarioEstante(this.value)">
+                            <option value="">-- Selecione o Usuário --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estante-livro">Qual livro quer adicionar/atualizar? *</label>
+                        <select id="estante-livro" required>
+                            <option value="">-- Selecione o Livro --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estante-status">Qual é o seu status de leitura? *</label>
+                        <select id="estante-status" required>
+                            <option value="lendo">Lendo Atualmente</option>
+                            <option value="quero ler">Quero Ler</option>
+                            <option value="lido">Já Lido</option>
+                        </select>
+                    </div>
+
+                    <div id="modal-estante-error" class="error-banner hidden"></div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="fecharModalEstante()">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i data-lucide="star"></i>
+                            <span>Salvar na Estante</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Lógica do Front-end -->
+    <script src="app.js"></script>
+</body>
+</html>
