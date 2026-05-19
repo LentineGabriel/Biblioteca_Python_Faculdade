@@ -1,8 +1,10 @@
-import os
-from dotenv import load_dotenv
-import psycopg2
-
-load_dotenv()
+import psycopg
 
 def get_connection():
-    return psycopg2.connect(os.getenv("DATABASE_URL"))
+    return psycopg.connect(
+        host="localhost",
+        dbname="postgres",
+        user="postgres",
+        password="G1u2",
+        port=5432
+    )

@@ -72,7 +72,10 @@ class UsuariosRepositorio:
         cursor = conn.cursor()
 
         cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s;", (id_usuario,))
+        removido = cursor.rowcount > 0
 
         conn.commit()
         cursor.close()
         conn.close()
+
+        return removido

@@ -148,9 +148,12 @@ class EmprestimosRepositorio:
             (id_emprestimo,),
         )
 
+        atualizado = cursor.rowcount > 0
         conn.commit()
         cursor.close()
         conn.close()
+
+        return atualizado
 
     # Atualizar status para atrasado
     def marcar_como_atrasado(self, id_emprestimo):
@@ -166,9 +169,12 @@ class EmprestimosRepositorio:
             (id_emprestimo,),
         )
 
+        atualizado = cursor.rowcount > 0
         conn.commit()
         cursor.close()
         conn.close()
+
+        return atualizado
 
     # Deletar empréstimo
     def deletar(self, id_emprestimo):

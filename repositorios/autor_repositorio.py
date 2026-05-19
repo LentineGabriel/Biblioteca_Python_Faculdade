@@ -83,8 +83,11 @@ class AutorRepositorio:
             DELETE FROM autor
             WHERE id_autor = %s;
         """, (id_autor,))
+        removido = cursor.rowcount > 0
 
         conn.commit()
 
         cursor.close()
         conn.close()
+
+        return removido

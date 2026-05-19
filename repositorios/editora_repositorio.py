@@ -84,8 +84,11 @@ class EditoraRepositorio:
             DELETE FROM editora
             WHERE id_editora = %s;
         """, (id_editora,))
+        removido = cursor.rowcount > 0
 
         conn.commit()
 
         cursor.close()
         conn.close()
+
+        return removido
